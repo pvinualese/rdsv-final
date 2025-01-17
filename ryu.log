@@ -1,0 +1,90 @@
+loading app ryu.app.rest_qos
+loading app ryu.app.rest_conf_switch
+loading app ./qos_simple_switch_13.py
+loading app ryu.app.ofctl_rest
+loading app flowmanager/flowmanager.py
+loading app ryu.controller.ofp_handler
+loading app ryu.topology.switches
+loading app ryu.controller.ofp_handler
+instantiating app None of DPSet
+creating context dpset
+instantiating app None of ConfSwitchSet
+creating context conf_switch
+creating context wsgi
+instantiating app ryu.app.rest_conf_switch of ConfSwitchAPI
+instantiating app ryu.controller.ofp_handler of OFPHandler
+instantiating app ryu.app.rest_qos of RestQoSAPI
+instantiating app ./qos_simple_switch_13.py of SimpleSwitch13
+instantiating app ryu.app.ofctl_rest of RestStatsApi
+instantiating app ryu.topology.switches of Switches
+instantiating app flowmanager/flowmanager.py of FlowManager
+Created flowmanager
+(202) wsgi starting up on http://0.0.0.0:8080
+[QoS][INFO] dpid=0000000000000001: Join qos switch.
+[QoS][INFO] dpid=0000000000000002: Join qos switch.
+packet in 2 06:bf:16:e9:d6:64 33:33:00:00:00:16 1
+packet in 2 06:bf:16:e9:d6:64 33:33:00:00:00:02 1
+packet in 2 06:bf:16:e9:d6:64 33:33:00:00:00:16 1
+[QoS][INFO] dpid=0000000000000003: Join qos switch.
+(202) accepted ('10.0.1.1', 52903)
+10.0.1.1 - - [17/Jan/2025 14:58:58] "POST /stats/flowentry/add HTTP/1.1" 200 115 0.012551
+(202) accepted ('10.0.1.1', 1282)
+10.0.1.1 - - [17/Jan/2025 14:58:58] "POST /stats/flowentry/add HTTP/1.1" 200 115 0.000538
+(202) accepted ('10.0.1.1', 24319)
+10.0.1.1 - - [17/Jan/2025 14:58:58] "POST /stats/flowentry/add HTTP/1.1" 200 115 0.000781
+(202) accepted ('10.0.1.1', 28915)
+10.0.1.1 - - [17/Jan/2025 14:58:58] "POST /stats/flowentry/add HTTP/1.1" 200 115 0.000516
+(202) accepted ('10.0.1.1', 27087)
+10.0.1.1 - - [17/Jan/2025 14:58:58] "POST /stats/flowentry/add HTTP/1.1" 200 115 0.000756
+(202) accepted ('10.0.1.1', 50416)
+10.0.1.1 - - [17/Jan/2025 14:58:58] "POST /stats/flowentry/add HTTP/1.1" 200 115 0.013989
+packet in 3 7e:4f:99:ba:b1:ab 33:33:00:00:00:02 2
+(202) accepted ('10.0.1.1', 28788)
+10.0.1.1 - - [17/Jan/2025 14:58:58] "PUT /v1.0/conf/switches/0000000000000001/ovsdb_addr HTTP/1.1" 201 120 0.000292
+packet in 2 06:bf:16:e9:d6:64 33:33:00:00:00:02 1
+packet in 3 7e:4f:99:ba:b1:ab 33:33:00:00:00:02 2
+(202) accepted ('10.0.1.1', 17298)
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/dist-packages/eventlet/wsgi.py", line 481, in handle_one_response
+    result = self.application(self.environ, start_response)
+  File "/usr/local/lib/python2.7/dist-packages/ryu/app/wsgi.py", line 236, in __call__
+    return super(wsgify_hack, self).__call__(environ, start_response)
+  File "/usr/local/lib/python2.7/dist-packages/webob/dec.py", line 129, in __call__
+    resp = self.call_func(req, *args, **kw)
+  File "/usr/local/lib/python2.7/dist-packages/webob/dec.py", line 193, in call_func
+    return self.func(req, *args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/ryu/app/wsgi.py", line 290, in __call__
+    return controller(req)
+  File "/usr/local/lib/python2.7/dist-packages/ryu/app/wsgi.py", line 160, in __call__
+    return getattr(self, action)(req, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/ryu/app/rest_qos.py", line 471, in set_qos
+    'set_qos', self.waiters)
+  File "/usr/local/lib/python2.7/dist-packages/ryu/app/rest_qos.py", line 527, in _access_switch
+    msg = function(rest, vid, waiters)
+  File "/usr/local/lib/python2.7/dist-packages/ryu/app/rest_qos.py", line 650, in _rest_command
+    key, value = func(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/ryu/app/rest_qos.py", line 749, in set_qos
+    msg = self._set_qos(cookie, rest, waiters, vid)
+  File "/usr/local/lib/python2.7/dist-packages/ryu/app/rest_qos.py", line 754, in _set_qos
+    match_value = rest[REST_MATCH]
+KeyError: 'match'
+10.0.1.1 - - [17/Jan/2025 14:59:08] "POST /qos/rules/0000000000000001 HTTP/1.1" 500 1668 0.000904
+packet in 2 06:bf:16:e9:d6:64 33:33:00:00:00:02 1
+(202) accepted ('10.0.1.1', 16676)
+10.0.1.1 - - [17/Jan/2025 14:59:11] "POST /qos/rules/0000000000000001 HTTP/1.1" 200 223 0.000774
+packet in 3 4a:e9:17:e2:8c:0d 33:33:00:00:00:02 2
+(202) accepted ('10.0.1.1', 11550)
+10.0.1.1 - - [17/Jan/2025 14:59:14] "GET /qos/rules/0000000000000001 HTTP/1.1" 200 833 0.008086
+packet in 3 7e:4f:99:ba:b1:ab 33:33:00:00:00:02 2
+packet in 2 06:bf:16:e9:d6:64 33:33:00:00:00:02 1
+packet in 2 2a:eb:cd:2a:84:1b 33:33:00:00:00:02 1
+packet in 3 c2:20:c3:16:74:25 33:33:00:00:00:02 2
+packet in 3 7e:4f:99:ba:b1:ab 33:33:00:00:00:02 2
+packet in 2 06:bf:16:e9:d6:64 33:33:00:00:00:02 1
+packet in 3 7e:4f:99:ba:b1:ab 33:33:00:00:00:02 2
+packet in 2 06:bf:16:e9:d6:64 33:33:00:00:00:02 1
+packet in 3 4a:e9:17:e2:8c:0d 33:33:00:00:00:02 2
+packet in 2 2a:eb:cd:2a:84:1b 33:33:00:00:00:02 1
+packet in 3 c2:20:c3:16:74:25 33:33:00:00:00:02 2
+packet in 3 7e:4f:99:ba:b1:ab 33:33:00:00:00:02 2
+packet in 2 06:bf:16:e9:d6:64 33:33:00:00:00:02 1
