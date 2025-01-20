@@ -48,7 +48,7 @@ CPE_EXEC="$KUBECTL exec -n $SDWNS $VCPE --"
 WAN_EXEC="$KUBECTL exec -n $SDWNS $VWAN --"
 CTRL_EXEC="$KUBECTL exec -n $SDWNS $VCTRL --"
 CTRL_SERV="${VCTRL/deploy\//}"
-#WAN_SERV="${VWAN/deploy\//}"
+WAN_SERV="${VWAN/deploy\//}"
 
 # Router por defecto inicial en k8s (calico)
 K8SGW="169.254.1.1"
@@ -65,8 +65,8 @@ echo "IPCPE = $IPCPE"
 IPWAN=`$WAN_EXEC hostname -I | awk '{print $1}'`
 echo "IPWAN = $IPWAN"
 
-# PORTWAN=`$KUBECTL get -n $SDWNS -o jsonpath="{.spec.ports[0].nodePort}" service $WAN_SERV`
-# echo "PORTWAN = $PORTWAN"
+PORTWAN=`$KUBECTL get -n $SDWNS -o jsonpath="{.spec.ports[0].nodePort}" service $WAN_SERV`
+echo "PORTWAN = $PORTWAN"
 
 IPCTRL=`$CTRL_EXEC hostname -I | awk '{print $1}'`
 echo "IPCTRL = $IPCTRL"
@@ -88,25 +88,9 @@ $CPE_EXEC ifconfig sr1sr2 up
 
 ## 3. En VNF:wan arrancar controlador SDN"
 echo "## 3. En VNF:wan arrancar controlador SDN"
-#$WAN_EXEC /usr/local/bin/ryu-manager --verbose flowmanager/flowmanager.py ryu.app.ofctl_rest 2>&1 | tee ryu.log &
-#$WAN_EXEC /usr/local/bin/ryu-manager ryu.app.simple_switch_13 ryu.app.ofctl_rest 2>&1 | tee ryu.log &
 
-
-#$CTRL_EXEC /usr/local/bin/ryu-manager flowmanager/flowmanager.py ryu.app.ofctl_rest 2>&1 | tee ryu.log &
-
+$CTRL_EXEC chmod +x ./qos_simple_switch_13.py
 $CTRL_EXEC /usr/local/bin/ryu-manager ryu.app.rest_qos ryu.app.rest_conf_switch  ./qos_simple_switch_13.py ryu.app.ofctl_rest flowmanager/flowmanager.py 2>&1 | tee ryu.log &
-
-# ## 4. En VNF:wan activar el modo SDN del conmutador y crear vxlan
-# echo "## 4. En VNF:wan activar el modo SDN del conmutador y crear vxlan"
-
-# $WAN_EXEC ovs-vsctl set bridge brwan protocols=OpenFlow10,OpenFlow12,OpenFlow13
-# $WAN_EXEC ovs-vsctl set-fail-mode brwan secure
-# $WAN_EXEC ovs-vsctl set bridge brwan other-config:datapath-id=0000000000000001
-# $WAN_EXEC ovs-vsctl set-controller brwan tcp:127.0.0.1:6633
-
-# $WAN_EXEC ip link add cpewan type vxlan id 5 remote $IPCPE dstport 8741 dev eth0
-# $WAN_EXEC ovs-vsctl add-port brwan cpewan
-# $WAN_EXEC ifconfig cpewan up
 
 ## 4. En VNF:wan, VNF:cpe, VNF:access activar el modo SDN del conmutador y crear vxlan
 $WAN_EXEC ovs-vsctl set bridge brwan protocols=OpenFlow10,OpenFlow12,OpenFlow13
@@ -146,17 +130,22 @@ echo "firefox http://localhost:$PORTCTRL/home/ &"
 
 ## 6. Aplicar QoS
 
-#ryu-manager ryu.app.rest_qos ryu.app.rest_conf_switch img/vnf-wan/qos_simple_switch_13.py
+
 echo "Aplicando QoS"
 $WAN_EXEC ovs-vsctl set-manager ptcp:6633
 curl -X PUT -d "\"tcp:$IPWAN:6633\"" http://localhost:$PORTCTRL/v1.0/conf/switches/0000000000000001/ovsdb_addr
 
-sleep 10
+
+
+sleep 5
 echo "Aplicando QoS 2"
-curl -X POST -d '{"port_name": "axswan", "type": "linux-htb", "max_rate":"3600000", "queues": [{"max_rate": "3600000"}, {"min_rate": "2200000"}]}' http://localhost:$PORTCTRL/qos/rules/0000000000000001
+curl -X POST -d '{"port_name": "axswan", "type": "linux-htb", "max_rate": "3600000", "queues": [ {"max_rate": "3600000"},{"min_rate": "2200000"}]}' http://localhost:$PORTCTRL/qos/queue/0000000000000001
+
 sleep 3
 echo "Aplicando QoS 3"
-curl -X POST -d '{"match": {"nw_dst": "'$IPACCESS'", "nw_proto": "UDP", "udp_dst": "5005"}, "actions":{"queue": "1"}}' http://localhost:$PORTCTRL/qos/rules/0000000000000001
+curl -X POST -d '{"match": {"nw_dst": "10.20.1.2", "nw_proto": "UDP", "udp_dst": "5005"}, "actions":{"queue": "1"}}' http://localhost:$PORTCTRL/qos/rules/0000000000000001
+
+
 sleep 3
 echo "Aplicando QoS 4"
 curl -X GET http://localhost:$PORTCTRL/qos/rules/0000000000000001
