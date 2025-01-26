@@ -5,7 +5,8 @@
 replicaCount: 1
 
 image:
-  repository: luciaacs/vnf-cpe
+  #repository: luciaacs/vnf-cpe
+  repository: localhost:32000/vnf-cpe
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"

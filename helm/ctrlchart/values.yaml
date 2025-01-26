@@ -5,7 +5,8 @@
 replicaCount: 1
 
 image:
-  repository: luciaacs/vnf-wan
+  # repository: luciaacs/vnf-wan
+  repository: localhost:32000/vnf-wan
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
