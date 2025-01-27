@@ -145,6 +145,10 @@ sleep 3
 echo "Aplicando QoS 3"
 curl -X POST -d '{"match": {"nw_dst": "10.20.1.2", "nw_proto": "UDP", "udp_dst": "5005"}, "actions":{"queue": "1"}}' http://localhost:$PORTCTRL/qos/rules/0000000000000001
 
+sleep 3
+echo "Aplicando QoS 3"
+curl -X POST -d '{"match": {"nw_dst": "10.20.2.2", "nw_proto": "UDP", "udp_dst": "5005"}, "actions":{"queue": "1"}}' http://localhost:$PORTCTRL/qos/rules/0000000000000001
+
 
 sleep 3
 echo "Aplicando QoS 4"
