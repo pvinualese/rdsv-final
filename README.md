@@ -1,3 +1,16 @@
+# Paquetes e imagenes
+cd ~/helm-files
+helm package ~/shared/rdsv-final/helm/accesschart
+helm package ~/shared/rdsv-final/helm/cpechart
+helm package ~/shared/rdsv-final/helm/wanchart
+helm package ~/shared/rdsv-final/helm/cpechart
+helm package ~/shared/rdsv-final/helm/ctrlchart
+helm repo index --url http://127.0.0.1/ .
+cat index.yaml
+docker stop helm-repo
+docker rm helm-repo
+docker run --restart always --name helm-repo -p 8080:80 -v ~/helm-files:/usr/share/nginx/html:ro -d nginx
+curl http://127.0.0.1:8080/index.yaml
 # EJECUCION FICHEROS INICIAL
 
 DENTRO DE shred/rdsv-final:
@@ -27,15 +40,25 @@ Abrir consolas de h1, h2 y voip-gw
 
 ## ARP 
 
+
+systemctl restart arpwatch
+sudo ls /var/lib/arpwatch/   (se muestra solo el fichero ethercodes.db)
+sudo touch /var/lib/arpwatch/arp.dat
+sudo chmod 664 /var/lib/arpwatch/arp.dat
+sudo chown nobody:nogroup /var/lib/arpwatch/arp.dat
+
+sudo arpwatch -d -i eth1
+
+sudo tcpdump -i eth1 arp
+
+
+
+Otros que probablemente no valgan:
+
 - Borrar entrada: sudo arp -d 10.20.2.2
 - ver tabla: arp -n
 
 arpwatch -i eth1
-
-sudo mkdir -p /var/lib/arpwatch
-sudo touch /var/lib/arpwatch/arp.dat
-sudo chmod 664 /var/lib/arpwatch/arp.dat
-sudo chown nobody:nogroup /var/lib/arpwatch/arp.dat
 
 sudo nano /lib/systemd/system/arpwatch.service
 ExecStart=/usr/sbin/arpwatch -i eth1 -f /var/lib/arpwatch/arp.dat
@@ -46,8 +69,5 @@ sudo systemctl restart arpwatch
 sudo tail -f /var/log/syslog
 
 
-sudo tcpdump -i eth1 arp
 
-sudo arpwatch -d -i eth1
 
-sudo ls /var/lib/arpwatch/

@@ -40,7 +40,7 @@ do
   helm -n $SDWNS install $vnf$NETNUM "http://127.0.0.1:8080"/$vnf$chart_suffix
 done
 
-
+echo "charts en el 8080"
 
 for i in {1..30}; do echo -n "."; sleep 1; done
 echo ''
