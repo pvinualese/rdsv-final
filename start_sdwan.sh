@@ -89,8 +89,8 @@ $CPE_EXEC ifconfig sr1sr2 up
 ## 3. En VNF:wan arrancar controlador SDN"
 echo "## 3. En VNF:wan arrancar controlador SDN"
 
-$CTRL_EXEC chmod +x ./qos_simple_switch_13.py
-$CTRL_EXEC /usr/local/bin/ryu-manager ryu.app.rest_qos ryu.app.rest_conf_switch  ./qos_simple_switch_13.py ryu.app.ofctl_rest flowmanager/flowmanager.py 2>&1 | tee ryu.log &
+$CTRL_EXEC chmod +x /root/qos_simple_switch_13.py
+$CTRL_EXEC /usr/local/bin/ryu-manager ryu.app.rest_qos ryu.app.rest_conf_switch  /root/qos_simple_switch_13.py ryu.app.ofctl_rest flowmanager/flowmanager.py 2>&1 | tee ryu.log &
 
 ## 4. En VNF:wan, VNF:cpe, VNF:access activar el modo SDN del conmutador y crear vxlan
 $WAN_EXEC ovs-vsctl set bridge brwan protocols=OpenFlow10,OpenFlow12,OpenFlow13
